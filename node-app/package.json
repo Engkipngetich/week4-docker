@@ -1,9 +1,10 @@
 {
   "name": "docker-node-app",
   "version": "1.0.0",
-  "description": "Simple Node.js Docker application",
+  "description": "Simple Node.js Docker application for Jenkins CI/CD",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node test.js"
   }
 }
