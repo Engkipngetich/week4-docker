@@ -6,6 +6,22 @@ pipeline {
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
     }
 
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Source code has been checked out by Jenkins.'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('node-app') {
+                    echo 'Installing Node.js dependencies...'
+                    sh 'npm ci'
+                }
+            }
+        }
 
         stage('Test') {
             steps {
@@ -29,15 +45,17 @@ pipeline {
 
         stage('Package') {
             steps {
-                dir('node-app') {
-                    echo 'Creating application package...'
-                    sh '''
-                        tar -czf application.tar.gz \
-                        --exclude=node_modules \
-                        --exclude=.git \
-                        .
-                    '''
-                }
+                echo 'Creating application package...'
+                sh '''
+                    rm -f application.tar.gz
+
+                    tar -czf application.tar.gz \
+                    --exclude=node_modules \
+                    --exclude=.git \
+                    -C node-app .
+                '''
+
+                echo 'Application package created successfully.'
             }
         }
 
@@ -45,6 +63,7 @@ pipeline {
             steps {
                 dir('node-app') {
                     echo 'Building Docker image...'
+
                     sh '''
                         docker build \
                         -t ${DOCKER_IMAGE}:${BUILD_NUMBER} \
@@ -71,6 +90,8 @@ pipeline {
 
                         docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
                         docker push ${DOCKER_IMAGE}:latest
+
+                        docker logout
                     '''
                 }
             }
