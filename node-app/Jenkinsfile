@@ -6,22 +6,6 @@ pipeline {
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
     }
 
-    stages {
-
-        stage('Checkout') {
-            steps {
-                echo 'Source code has been checked out by Jenkins.'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                dir('node-app') {
-                    echo 'Installing Node.js dependencies...'
-                    sh 'npm ci'
-                }
-            }
-        }
 
         stage('Test') {
             steps {
