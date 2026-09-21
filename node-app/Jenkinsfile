@@ -5,30 +5,36 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Source code has been checked out by Jenkins.'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Installing dependencies...'
-                sh 'npm install'
+                dir('node-app') {
+                    echo 'Installing Node.js dependencies...'
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running automated tests...'
-                sh 'npm test'
+                dir('node-app') {
+                    echo 'Running automated tests...'
+                    sh 'npm test'
+                }
             }
         }
 
         stage('Validation') {
             steps {
-                echo 'Validating application syntax...'
-                sh 'node --check server.js'
-                sh 'node --check test.js'
-                echo 'Validation completed successfully!'
+                dir('node-app') {
+                    echo 'Validating application syntax...'
+                    sh 'node --check server.js'
+                    sh 'node --check test.js'
+                    echo 'Validation completed successfully!'
+                }
             }
         }
     }
